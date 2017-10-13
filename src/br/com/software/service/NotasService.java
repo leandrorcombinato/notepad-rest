@@ -35,7 +35,7 @@ public class NotasService {
 	public Response listarNotas() {
 		List<Nota> responses = new ArrayList<>();
 		try {
-			responses = notaDAO.listarNotas();
+			responses = notaDAO.findAll();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,7 +54,7 @@ public class NotasService {
 		System.out.println(nota.getTitulo());
 		
 		try {
-			int idGerado = notaDAO.addNota(nota);
+			int idGerado = notaDAO.save(nota);
 			msg = "Nota "+String.valueOf(idGerado)+" add com sucesso! ";
 			nota.setId(idGerado);
 		    String json = Nota.converterFromJson(nota);
@@ -76,27 +76,27 @@ public class NotasService {
 		Nota nota = new Nota();
 		String msg = "";
 		try {
-			nota = notaDAO.buscarNotaPorId(idNota);
+			nota = notaDAO.findById(idNota);
 		} catch (Exception e) {
 			msg = "Numero da Nota "+idNota+" não foi encontrado! "+e.getMessage();
 			return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
 		}
 
 		msg = ", { message: Numero da Nota "+idNota+" foi encontrado com sucesso. }";
-		return Response.status(Response.Status.OK).entity(Nota.converterFromJson(nota).concat(msg)).build();
+		return Response.status(Response.Status.OK).entity(Nota.converterFromJson(nota)).build();
 	}
 
 	@PUT
 	@Path("/edit/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response editarNota(Nota nota, @PathParam("id") int idNota) {
+	public Response salvarNota(Nota nota, @PathParam("id") int idNota) throws Exception{
 		String msg = "";
 		
 		System.out.println(nota.getTitulo());
 		
 		try {
-			notaDAO.editarNota(nota, idNota);
+			notaDAO.update(nota, idNota);
 			
 			msg = "Nota editada com sucesso!";
 			return Response.ok(Nota.converterFromJson(nota), MediaType.APPLICATION_JSON).build();
@@ -110,11 +110,11 @@ public class NotasService {
 	@Path("/delete/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response removerNota(@PathParam("id") int idNota) {
+	public Response deletarNota(@PathParam("id") int idNota) {
 		String msg = "";
 		
 		try {
-			notaDAO.removerNota(idNota);
+			notaDAO.delete(idNota);
 			
 			msg = "Nota removida com sucesso!";
 			return Response.ok(msg, MediaType.APPLICATION_JSON).build();

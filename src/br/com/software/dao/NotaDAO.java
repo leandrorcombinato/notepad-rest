@@ -10,9 +10,9 @@ import java.util.List;
 import br.com.software.config.BDConfig;
 import br.com.software.entidade.Nota;
 
-public class NotaDAO {
+public class NotaDAO implements GenericDAO<Nota>{
 	
-	public List<Nota> listarNotas() throws Exception {
+	public List<Nota> findAll() throws Exception {
 		List<Nota> lista = new ArrayList<>();
 
 		Connection conexao = BDConfig.getConnection();
@@ -33,8 +33,8 @@ public class NotaDAO {
 
 		return lista;
 	}
-	
-	public Nota buscarNotaPorId(int idNota) throws Exception {
+
+	public Nota findById(int idNota) throws Exception {
 		Nota nota = null;
 
 		Connection conexao = BDConfig.getConnection();
@@ -55,7 +55,7 @@ public class NotaDAO {
 		return nota;
 	}
 
-	public int addNota(Nota nota) throws Exception {
+	public int save(Nota nota) throws Exception {
 		int idGerado = 0;
 		Connection conexao = BDConfig.getConnection();
 
@@ -74,7 +74,7 @@ public class NotaDAO {
 		return idGerado;
 	}
 	
-	public void editarNota(Nota nota, int idNota) throws Exception {
+	public void update(Nota nota, int idNota) throws Exception {
 		Connection conexao = BDConfig.getConnection();
 
 		String sql = "UPDATE TB_NOTA SET TITULO = ?, DESCRICAO = ? WHERE ID_NOTE = ?";
@@ -86,7 +86,7 @@ public class NotaDAO {
 		statement.execute();
 	}
 	
-	public void removerNota(int idNota) throws Exception {
+	public void delete(int idNota) throws Exception {
 		Connection conexao = BDConfig.getConnection();
 
 		String sql = "DELETE FROM TB_NOTA WHERE ID_NOTE = ?";
@@ -95,5 +95,5 @@ public class NotaDAO {
 		statement.setInt(1, idNota);
 		statement.execute();
 	}
-	
+
 }
